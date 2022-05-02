@@ -12,21 +12,16 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
             onSort({ path: item, order: "asc" });
         }
     };
-    const createArrow = () => {
-        if (!selectedSort) {
-            return "";
+    const createArrow = (selectedSort, currentPath) => {
+        if (selectedSort.path === currentPath) {
+            if (selectedSort.order === "asc") {
+                return <i className="bi bi-caret-down-fill"></i>;
+            } else {
+                return <i className="bi bi-caret-up-fill"></i>;
+            }
         }
-        // if (selectedSort && selectedSort.order === "asc") {
-        //     console.log("bi bi-caret-down-fill");
-        //     return "bi bi-caret-down-fill";
-        // }
-        // if (selectedSort && selectedSort.order === "desc") {
-        //     console.log("bi bi-caret-up-fill");
-        //     return "bi bi-caret-up-fill";
-        // }
-        return selectedSort.order === "asc"
-            ? "bi bi-caret-down-fill"
-            : "bi bi-caret-up-fill";
+
+        return null;
     };
     return (
         <thead>
@@ -42,7 +37,8 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
                         {...{ role: columns[column].path && "button" }}
                         scope="col"
                     >
-                        {columns[column].name} <i className={createArrow()}></i>
+                        {columns[column].name}{" "}
+                        {createArrow(selectedSort, columns[column].path)}
                     </th>
                 ))}
             </tr>
