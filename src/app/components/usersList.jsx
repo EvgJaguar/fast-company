@@ -7,6 +7,7 @@ import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
+import UserSearch from "./userSearch";
 
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -16,6 +17,8 @@ const UsersList = () => {
     const pageSize = 8;
 
     const [users, setUsers] = useState();
+    const [searchValue, setSearchValue] = useState("");
+
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
@@ -72,6 +75,20 @@ const UsersList = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
+
+        const handleChangeUser = (event) => {
+            setSearchValue(event.target.value);
+
+            clearFilter();
+            setUsers(
+                users.filter((user) =>
+                    new RegExp(event.target.value, "gi").test(user.name)
+                )
+            );
+
+            console.log(event.target.value);
+        };
+
         return (
             <div className="d-flex">
                 {professions && (
@@ -92,6 +109,10 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <UserSearch
+                        value={searchValue}
+                        onChange={handleChangeUser}
+                    />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
@@ -116,6 +137,6 @@ const UsersList = () => {
     return "Loading...";
 };
 UsersList.propTypes = {
-    users: PropTypes.array.isRequired
+    users: PropTypes.array
 };
 export default UsersList;
